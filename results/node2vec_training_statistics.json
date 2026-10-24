@@ -1,0 +1,8 @@
+{
+  "sample_edges": 2289,
+  "walk_count": 4800,
+  "walk_length_histogram": {
+    "12": 4800
+  },
+  "positive_pairs": 288000
+}

@@ -1,0 +1,121 @@
+{
+  "graph": {
+    "vertices": 281903,
+    "edges": 2312497,
+    "self_loops": 0,
+    "in_degree": {
+      "mean": 8.203165627893283,
+      "median": 2.0,
+      "p90": 10.0,
+      "p99": 59.0,
+      "max": 38606,
+      "zero_count": 20315
+    },
+    "out_degree": {
+      "mean": 8.203165627893283,
+      "median": 5.0,
+      "p90": 19.0,
+      "p99": 53.0,
+      "max": 255,
+      "zero_count": 172
+    }
+  },
+  "pagerank": {
+    "variants": [
+      {
+        "alpha": 0.75,
+        "iterations": 84,
+        "residual": 7.486014041527289e-13,
+        "top_page_id": 226411,
+        "top_score": 0.009813075652292634,
+        "top10_overlap_with_alpha085": 6,
+        "top10_jaccard_with_alpha085": 0.42857142857142855
+      },
+      {
+        "alpha": 0.85,
+        "iterations": 100,
+        "residual": 1.937098396311083e-09,
+        "top_page_id": 89073,
+        "top_score": 0.011302854908404922,
+        "top10_overlap_with_alpha085": 10,
+        "top10_jaccard_with_alpha085": 1.0
+      },
+      {
+        "alpha": 0.95,
+        "iterations": 100,
+        "residual": 0.00013110510809933657,
+        "top_page_id": 89073,
+        "top_score": 0.012466081581533435,
+        "top10_overlap_with_alpha085": 6,
+        "top10_jaccard_with_alpha085": 0.42857142857142855
+      }
+    ],
+    "concentration": [
+      {
+        "rank": 1,
+        "node_fraction": 3.5473194680439727e-06,
+        "cumulative_score": 0.011302854908404922
+      },
+      {
+        "rank": 3,
+        "node_fraction": 1.0641958404131917e-05,
+        "cumulative_score": 0.028867958112801396
+      },
+      {
+        "rank": 10,
+        "node_fraction": 3.547319468043973e-05,
+        "cumulative_score": 0.0471036500287294
+      },
+      {
+        "rank": 100,
+        "node_fraction": 0.00035473194680439726,
+        "cumulative_score": 0.1461717944712199
+      },
+      {
+        "rank": 1000,
+        "node_fraction": 0.0035473194680439727,
+        "cumulative_score": 0.3129908265562319
+      },
+      {
+        "rank": 2820,
+        "node_fraction": 0.010003440899884003,
+        "cumulative_score": 0.4056567264676189
+      },
+      {
+        "rank": 14096,
+        "node_fraction": 0.05000301522154784,
+        "cumulative_score": 0.5704622320524613
+      },
+      {
+        "rank": 28191,
+        "node_fraction": 0.10000248312362763,
+        "cumulative_score": 0.6449132828800248
+      },
+      {
+        "rank": 281903,
+        "node_fraction": 1.0,
+        "cumulative_score": 0.9999999999987416
+      }
+    ],
+    "median_score": 1.0851828357040507e-06,
+    "log_indegree_log_pagerank_pearson": 0.5640430408708047
+  },
+  "embedding": {
+    "query_page_id": 89073,
+    "dimensions": 32,
+    "sample_vertices": 1200,
+    "pc1_explained_variance_ratio": 0.461881696085339,
+    "pc2_explained_variance_ratio": 0.2058069475081995,
+    "pc12_explained_variance_ratio": 0.6676886435935385,
+    "nearest10_pairwise_cosine_mean": 0.9651810512608983,
+    "nearest10_pairwise_cosine_min": 0.9291276478208476,
+    "pca_distance_query_to_all_mean": 1.322814103453908,
+    "pca_distance_query_to_nearest10_mean": 1.1596804342511748,
+    "cosine_to_query": {
+      "mean": 0.7141885963525972,
+      "median": 0.7682792640623431,
+      "p90": 0.8571221086024138,
+      "max": 0.9136890969948225
+    }
+  }
+}

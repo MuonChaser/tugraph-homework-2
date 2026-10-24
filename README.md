@@ -1,4 +1,5 @@
-# 基于 TuGraph 的 Stanford Web Graph 分析
+# 作业2：TuGraph 网页链接图分析
+
 
 - [在线阅读全文：实验过程、算法与结果](REPORT.md)
 - [查看实验报告 PDF](output/pdf/作业报告.pdf)
@@ -8,7 +9,7 @@
 
 ## 实验内容
 
-使用 SNAP Stanford Web Graph，在 TuGraph 中构建网页与有向超链接图。完成数据导入、图规模核验和图数据导出，再基于导出图运行 PageRank 与 Node2Vec。
+报告共 19 页。使用 SNAP Stanford Web Graph，在 TuGraph 中构建网页与有向超链接图。完成数据导入、图规模核验和图数据导出，再基于导出图运行 PageRank 与 Node2Vec。
 
 | 项目 | 实验结果 |
 | --- | ---: |
@@ -35,6 +36,7 @@
 4. 使用 `lgraph_export` 导出图数据，作为两项算法的输入。
 5. 在全图上运行 PageRank，保存排名和运行指标。
 6. 以节点 89073 为中心抽取 1,200 节点的诱导子图，训练 Node2Vec 并检索嵌入近邻。
+7. 统计度分布与分值集中度，比较三组阻尼系数，并绘制嵌入投影和近邻相似度热力图。
 
 ## 运行方法
 
@@ -43,6 +45,8 @@
 ### 1. 准备数据
 
 ```powershell
+git clone https://github.com/MuonChaser/tugraph-homework-2.git
+cd tugraph-homework-2
 python -m pip install -r requirements.txt
 python scripts/download_data.py
 python scripts/run_experiment.py prepare
@@ -72,6 +76,7 @@ docker run --rm -v "$($PWD.Path):/workspace" tugraph/tugraph-runtime-centos7:4.5
 
 ```powershell
 python scripts/run_experiment.py run
+python scripts/extended_analysis.py
 python scripts/plot_report_figures.py
 ```
 
@@ -117,7 +122,8 @@ latex_report/figures/              封面标识与矢量图
 scripts/download_data.py           数据下载
 scripts/run_experiment.py          数据准备、PageRank、Node2Vec
 scripts/verify_tugraph.py          TuGraph 计数核验
-scripts/plot_report_figures.py     论文图表生成
+scripts/extended_analysis.py       度分布、参数对比与嵌入统计
+scripts/plot_report_figures.py     图表与热力图生成
 results/                          算法指标、排序、向量与查询记录
 cypher/queries.cypher              图查询
 import.json                       TuGraph 导入配置
@@ -131,9 +137,38 @@ import.json                       TuGraph 导入配置
 - [完整实验摘要](results/experiment_summary.json)
 - [图规模核验记录](results/tugraph_verification.json)
 
+## 扩展分析结果
+
+| 指标 | 数值 |
+| --- | ---: |
+| 最大入度 / 最大出度 | 38,606 / 255 |
+| 前约 1% 节点的 PageRank 占比 | 40.57% |
+| PCA 前两主成分累计方差解释率 | 66.77% |
+| 前十名近邻之间的平均余弦相似度 | 0.96518 |
+
+- [结构统计与对比实验摘要](results/extended_analysis.json)
+- [各组 PageRank 逐轮残差](results/pagerank_iterations.csv)
+- [PageRank 分值集中度](results/pagerank_concentration.csv)
+- [全图 PageRank 与节点度数（压缩 CSV）](results/pagerank_full.csv.gz)
+- [节点向量二维投影](results/node2vec_projection.csv)
+- [近邻相似度矩阵](results/node2vec_neighbor_heatmap.csv)
+- [游走长度与训练样本统计](results/node2vec_training_statistics.json)
+
+## 图表
+
+| 度分布 | 阻尼系数对比 |
+| --- | --- |
+| ![度分布](figures/degree_distribution.png) | ![迭代残差](figures/pagerank_convergence.png) |
+
+| 节点嵌入投影 | 近邻相似度矩阵 |
+| --- | --- |
+| ![嵌入投影](figures/node2vec_projection.png) | ![相似度热力图](figures/node2vec_similarity_heatmap.png) |
+
 ## 资料来源
 
 - [SNAP Stanford Web Graph](https://snap.stanford.edu/data/web-Stanford.html)
 - Grover A, Leskovec J. node2vec: Scalable Feature Learning for Networks. KDD, 2016.
 - [TuGraph 官方文档](https://tugraph-db.readthedocs.io/)
+
+
 
