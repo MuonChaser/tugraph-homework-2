@@ -136,6 +136,4 @@ import.json                       TuGraph 导入配置
 - [SNAP Stanford Web Graph](https://snap.stanford.edu/data/web-Stanford.html)
 - Grover A, Leskovec J. node2vec: Scalable Feature Learning for Networks. KDD, 2016.
 - [TuGraph 官方文档](https://tugraph-db.readthedocs.io/)
-- 封面依据 Xueyan Hu 的 [CUFE Course Report LaTeX Template](https://www.overleaf.com/latex/templates/central-university-of-finance-and-economics-cufe-course-report-latex-template/zjsmnqbwgmyg)，CC BY 4.0。校名校徽组合图沿用该模板来源仓库中的素材。
-
 
