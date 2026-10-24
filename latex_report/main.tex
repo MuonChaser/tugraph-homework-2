@@ -1,0 +1,282 @@
+\documentclass[UTF8,a4paper,12pt,fontset=windows]{ctexart}
+\usepackage[left=2.5cm,right=2.5cm,top=2.54cm,bottom=2.54cm,headheight=16pt]{geometry}
+\usepackage{graphicx,booktabs,tabularx,array,amsmath,amssymb,enumitem,listings,hyperref,float,caption}
+\hypersetup{hidelinks,pdftitle={基于 TuGraph 的 Stanford Web Graph 分析},pdfauthor={张博文}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0pt}
+\linespread{1.3}
+\ctexset{section={format=\large\heiti},subsection={format=\normalsize\heiti}}
+\setlist[enumerate]{leftmargin=2.4em,itemsep=0pt,topsep=.5em}
+\pagestyle{plain}
+\captionsetup{font=small,labelsep=quad}
+\renewcommand{\lstlistingname}{代码}
+\lstset{basicstyle=\ttfamily\footnotesize,frame=tb,framerule=.4pt,breaklines=true,columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\tiny,showstringspaces=false,aboveskip=.8em,belowskip=.8em}
+% 封面依据 Xueyan Hu 的 CUFE Course Report LaTeX Template（CC BY 4.0）。
+% 封面字段、顺序、字体、间距与原模板保持一致；未提供的字段留空。
+\begin{document}
+\newgeometry{left=2.5cm,right=2.5cm,top=2.54cm,bottom=2.54cm}
+\begin{titlepage}
+    \linespread{1.5}\selectfont
+    \def\MYTERM{2026-2027-1}
+    \def\MYCOURSE{专业综合实践{\fontspec{KaiTi}○}}
+    \def\MYCOURSEID{0610140-01}
+    \def\MYADVISOR{王卯宁}
+    \def\MYCLASS{}
+    \def\MYID{2023312327}
+    \def\MYNAME{张博文}
+    \begin{center}
+        \includegraphics[width=1.0\textwidth]{figures/cufe_template_wordmark.png}\\
+        \vspace{20mm}
+        %\textbf{\zihao{2}{\heiti\textbf{\MYTITLE}}}\\[0.8cm]
+        \vspace{10mm}
+        %\vspace{\fill}
+
+        \setlength{\extrarowheight}{3mm}
+        {\kaishu \zihao{4}
+            \begin{tabular}{rp{8cm}<{\centering}}
+                {\makebox[4\ccwd][s]{学年学期：}}       & \kaishu \underline{\makebox[8cm]{\MYTERM}}     \\
+                {\makebox[4\ccwd][s]{课程名称：}}       & \kaishu \underline{\makebox[8cm]{\MYCOURSE}}   \\
+                {\makebox[4\ccwd][s]{课程代码：}}       & \kaishu \underline{\makebox[8cm]{\MYCOURSEID}} \\
+                {\makebox[4\ccwd][s]{任课教师：}}       & \kaishu \underline{\makebox[8cm]{\MYADVISOR}}  \\
+                {\makebox[4\ccwd][s]{班\qquad 级：}}    & \kaishu \underline{\makebox[8cm]{\MYCLASS}}    \\
+                {\makebox[4\ccwd][s]{学\qquad 号：}}    & \kaishu \underline{\makebox[8cm]{\MYID}}       \\
+                {\makebox[4\ccwd][s]{姓\qquad 名：}}    & \kaishu \underline{\makebox[8cm]{\MYNAME}}     \\
+                \\
+                {\makebox[4\ccwd][s]{总\qquad 分：}}    & \kaishu \underline{\makebox[8cm]{}}            \\
+                {\makebox[4\ccwd][s]{评$\ $分$\ $人：}} & \kaishu \underline{\makebox[8cm]{}}            \\
+            \end{tabular}
+        }\\[2cm]
+    \end{center}
+\end{titlepage}
+\restoregeometry
+\pagenumbering{Roman}
+\begin{center}
+{\zihao{3}\heiti 基于 TuGraph 的 Stanford Web Graph 分析}
+\end{center}
+\vspace{1em}
+\begin{abstract}
+\normalsize
+本文以 Stanford Web Graph 为实验数据，在 TuGraph 中构建网页链接图，并开展 PageRank 节点排序和 Node2Vec 节点嵌入实验。数据集包含 281,903 个网页节点和 2,312,497 条有向链接。通过 CSV 批量导入与 Cypher 查询完成图数据建模和规模核验，再基于 TuGraph 导出的边表运行图算法。PageRank 在全图上迭代 100 轮，节点 89073 的得分最高，为 0.01130285。Node2Vec 在以该节点为中心的 1,200 节点子图上学习 32 维向量，训练损失由 2.01132 降至 1.85049，并通过余弦相似度获得结构近邻。实验实现了图数据存储、查询、节点重要性排序和节点表示学习的完整流程。
+\end{abstract}
+\noindent\textbf{关键词：} TuGraph；网页链接网络；PageRank；Node2Vec；节点嵌入
+\clearpage
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\section{实验目的}
+本实验基于 TuGraph 平台完成网页链接图的建模与分析。实验包括三个环节：将公开边列表转换为图数据库中的顶点和边；利用 PageRank 计算网页的全局重要性；利用 Node2Vec 学习局部子图的节点向量，并检索结构相近的网页节点。
+
+\section{实验数据与图模型}
+\subsection{数据来源}
+实验选用 Stanford Network Analysis Project（SNAP）发布的 Stanford Web Graph 数据集\cite{snap}。原始文件为 \texttt{web-Stanford.txt.gz}，采用边列表格式，每行包含起点和终点两个整数编号。有向边 $(u,v)$ 表示网页 $u$ 包含指向网页 $v$ 的超链接。
+
+数据集包含 281,903 个节点和 2,312,497 条有向边，节点编号范围为 1--281,903。平均出度为
+\begin{equation}
+\overline{k}_{\mathrm{out}}=\frac{|E|}{|V|}=\frac{2{,}312{,}497}{281{,}903}\approx 8.20.
+\end{equation}
+
+\subsection{TuGraph 图模式}
+将网页网络表示为有向图 $G=(V,E)$。顶点标签设为 \texttt{webpage}，以 INT32 类型的 \texttt{id} 属性作为主键；边标签设为 \texttt{hyperlink}，起点和终点均为 \texttt{webpage} 顶点。原始网页编号保留为主键，边的方向与原始数据一致。图模式及数据规模见表\ref{tab:data}。
+
+\begin{table}[H]
+\centering
+\caption{图模式与数据规模}\label{tab:data}
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+项目 & 内容\\
+\midrule
+顶点标签 & \texttt{webpage}\\
+顶点主键 & \texttt{id}，INT32 类型\\
+边标签 & \texttt{hyperlink}\\
+边方向 & 起点网页指向目标网页\\
+节点数 & 281,903\\
+边数 & 2,312,497\\
+平均出度 & 8.20\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{数据处理与 TuGraph 建图}
+\subsection{数据预处理}
+预处理程序读取压缩边列表，跳过注释行，提取每条边的起点与终点编号。将全部端点编号合并、去重后写入顶点文件 \texttt{webpage.csv}，并将原始有向边写入边文件 \texttt{hyperlink.csv}。顶点文件每行保存一个主键，边文件每行保存一对起止主键，两类文件均不含表头。
+
+\subsection{图数据导入与导出}
+根据 TuGraph 的批量导入格式\cite{tugraph}编写 \texttt{import.json}，配置顶点标签、主键、边标签、端点约束及 CSV 列映射。通过 \texttt{lgraph\_import} 将数据导入 \texttt{default} 图，核心命令见代码\ref{code:import}。
+
+\begin{lstlisting}[caption={TuGraph 批量导入命令},label={code:import}]
+lgraph_import -c /workspace/import.json \
+  --dir /workspace/tugraph_db \
+  --graph default --overwrite 1
+\end{lstlisting}
+
+导入完成后，使用 \texttt{lgraph\_export} 导出图数据。PageRank 和 Node2Vec 均读取导出的 \path{tugraph_export/hyperlink_webpage_webpage.csv}，以导入数据库后的图作为算法输入。
+
+\subsection{图规模核验}
+在 TuGraph 中执行代码\ref{code:count}所示的 Cypher 查询，分别统计网页节点和超链接数量。查询结果为 281,903 个节点、2,312,497 条边，与预处理统计一致。
+
+\begin{lstlisting}[caption={节点与边数量查询},label={code:count}]
+MATCH (p:webpage) RETURN count(p);
+MATCH ()-[e:hyperlink]->() RETURN count(e);
+\end{lstlisting}
+
+\section{算法原理与实验方法}
+\subsection{PageRank 节点重要性计算}
+PageRank 根据链接关系递归计算节点重要性。节点从入邻居接收分值，分配比例由入邻居的出度确定。实验采用阻尼系数 $\alpha=0.85$，迭代更新式为
+\begin{equation}\label{eq:pr}
+PR_{t+1}(v)=\frac{1-\alpha}{N}+\alpha\left(\sum_{u\in In(v)}\frac{PR_t(u)}{k_{\mathrm{out}}(u)}+\frac{D_t}{N}\right),
+\end{equation}
+其中，$N$ 为节点数，$In(v)$ 为指向节点 $v$ 的节点集合，$k_{\mathrm{out}}(u)$ 为节点 $u$ 的出度，$D_t$ 为第 $t$ 轮中出度为零的节点分值之和。
+
+程序使用 SciPy 稀疏矩阵保存转移概率，将每个节点的初始得分设为 $1/N$。每轮迭代按式\eqref{eq:pr}传播分值，并将悬挂节点的分值均匀分配至全体节点。最大迭代次数设为 100，停止阈值设为 $10^{-12}$。相邻两轮得分差的 $L_1$ 范数定义为
+\begin{equation}
+\varepsilon_t=\sum_{v\in V}|PR_{t+1}(v)-PR_t(v)|.
+\end{equation}
+
+\subsection{Node2Vec 节点嵌入}
+Node2Vec 通过带偏置的随机游走生成节点序列，再利用 Skip-gram 学习节点向量\cite{node2vec}。本实验以 PageRank 排名第一的节点 89073 为中心，按无向邻接关系执行广度优先搜索，选择 1,200 个节点。遍历时对邻居编号排序；随后保留选中节点之间的原始有向边，得到包含 2,289 条边的诱导子图。
+
+随机游走沿子图的出边前进。设上一节点为 $t$、当前节点为 $v$、候选下一节点为 $x$，程序根据出边邻接关系计算偏置权重：
+\begin{equation}
+\eta_{pq}(t,x)=
+\begin{cases}
+1/p, & x=t,\\
+1, & x\ne t\ \text{且}\ x\in N_{\mathrm{out}}(t),\\
+1/q, & \text{其他情况}.
+\end{cases}
+\end{equation}
+对 $N_{\mathrm{out}}(v)$ 中各候选节点的权重归一化后，得到下一步的采样概率。本实验设 $p=1$、$q=2$，每个节点生成 4 条游走，每条最多包含 12 个节点；遇到无出边节点时结束该条游走。
+
+\subsection{向量训练与相似度计算}
+Skip-gram 从游走序列中构造中心节点与窗口上下文节点的正样本对，并通过负采样训练输入向量与输出向量。单个正样本对 $(v,u)$ 的优化目标为
+\begin{equation}
+\log\sigma(\mathbf{z}_v^{\mathsf T}\mathbf{c}_u)+\sum_{i=1}^{K}\mathbb{E}_{n_i\sim P_n}\log\sigma(-\mathbf{z}_v^{\mathsf T}\mathbf{c}_{n_i}),
+\end{equation}
+其中，$\mathbf{z}_v$ 为输入向量，$\mathbf{c}_u$ 为输出向量，$\sigma$ 为 Sigmoid 函数，$K$ 为负样本数。负采样分布 $P_n$ 由节点在游走序列中的频率取 $0.75$ 次幂后归一化得到。
+
+实验设置嵌入维数为 32、窗口大小为 3、负样本数为 3，训练 5 轮。随机种子为 20261022，初始学习率为 0.025，并随训练轮次衰减。主要参数见表\ref{tab:param}。
+
+\begin{table}[H]
+\centering
+\caption{Node2Vec 实验参数}\label{tab:param}
+\begin{tabular}{lclc}
+\toprule
+参数 & 取值 & 参数 & 取值\\
+\midrule
+采样中心节点 & 89073 & 样本节点数 & 1,200\\
+每节点游走数 & 4 & 最大游走长度 & 12\\
+回访参数 $p$ & 1 & 探索参数 $q$ & 2\\
+嵌入维数 & 32 & 窗口大小 & 3\\
+负样本数 & 3 & 训练轮数 & 5\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+训练完成后，使用节点的输入向量计算余弦相似度：
+\begin{equation}
+\operatorname{sim}(u,v)=\frac{\mathbf{z}_u^{\mathsf T}\mathbf{z}_v}{\|\mathbf{z}_u\|_2\|\mathbf{z}_v\|_2}.
+\end{equation}
+以节点 89073 为查询节点，将其与其余样本节点的相似度降序排列，得到嵌入近邻。
+
+\section{实验结果与分析}
+\subsection{PageRank 排序结果}
+PageRank 在全图上迭代 100 轮，按最大迭代次数停止。最终 $L_1$ 残差为 $1.9371\times10^{-9}$，节点得分之和为 1.000000。得分前十的节点及其出度见表\ref{tab:pr}，对应分布见图\ref{fig:top10}。
+
+\begin{table}[H]
+\centering
+\caption{PageRank 得分前十的节点}\label{tab:pr}
+\begin{tabular}{rrrr}
+\toprule
+排名 & 节点编号 & PageRank & 出度\\
+\midrule
+1 & 89073 & 0.01130285 & 64\\
+2 & 226411 & 0.00926783 & 20\\
+3 & 241454 & 0.00829727 & 64\\
+4 & 262860 & 0.00302312 & 1\\
+5 & 134832 & 0.00300128 & 7\\
+6 & 234704 & 0.00257173 & 23\\
+7 & 136821 & 0.00245371 & 14\\
+8 & 68889 & 0.00243079 & 12\\
+9 & 105607 & 0.00239105 & 35\\
+10 & 69358 & 0.00236401 & 7\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+节点 89073 的 PageRank 最高，为 0.01130285，约为第二名的 1.22 倍。前三名分值合计为 0.02887，占总分值的 2.89\%；前十名合计为 0.04710，占总分值的 4.71\%。第三名得分约为第四名的 2.74 倍，前三名与其后节点形成明显差距。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.82\textwidth]{figures/pagerank_top10.pdf}
+\caption{PageRank 得分前十的节点}\label{fig:top10}
+\end{figure}
+
+图\ref{fig:distribution}给出了全图 PageRank 得分的对数直方图。低分区间集中分布着大量节点，高分区间的节点数量逐渐减少，形成长尾分布。该结果与前十名节点占有较高分值的排序结果一致，表明网页链接网络中的重要性集中于少数节点。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.82\textwidth]{figures/pagerank_distribution.pdf}
+\caption{全图 PageRank 得分分布}\label{fig:distribution}
+\end{figure}
+
+\subsection{Node2Vec 训练结果}
+局部子图包含 1,200 个节点和 2,289 条有向边，共生成 4,800 条随机游走序列，构造 288,000 个 Skip-gram 正样本对。第 1 轮平均负采样损失为 2.01132，第 5 轮降至 1.85049，相对下降约 8.00\%。训练统计见表\ref{tab:n2v}。
+
+\begin{table}[H]
+\centering
+\caption{Node2Vec 训练统计}\label{tab:n2v}
+\begin{tabular}{lr}
+\toprule
+指标 & 数值\\
+\midrule
+样本节点数 & 1,200\\
+样本有向边数 & 2,289\\
+游走序列数 & 4,800\\
+正样本对数 & 288,000\\
+第 1 轮平均负采样损失 & 2.01132\\
+第 5 轮平均负采样损失 & 1.85049\\
+损失相对下降 & 8.00\%\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{节点嵌入近邻分析}
+表\ref{tab:neighbors}列出了与中心节点 89073 余弦相似度最高的十个样本节点。节点 16518 的相似度最高，为 0.91369；前五名的相似度介于 0.89990 与 0.91369 之间。这些节点在随机游走序列中具有相近的上下文，因而在向量空间中表现出较高的结构相似度。
+
+\begin{table}[H]
+\centering
+\caption{节点 89073 的嵌入近邻}\label{tab:neighbors}
+\begin{tabular}{rrr}
+\toprule
+排名 & 节点编号 & 余弦相似度\\
+\midrule
+1 & 16518 & 0.91369\\
+2 & 19912 & 0.90640\\
+3 & 12055 & 0.90587\\
+4 & 9082 & 0.90515\\
+5 & 7815 & 0.89990\\
+6 & 20040 & 0.89738\\
+7 & 8209 & 0.89480\\
+8 & 18910 & 0.89331\\
+9 & 2748 & 0.89174\\
+10 & 5237 & 0.89118\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+PageRank 与 Node2Vec 分别给出节点的排序结果和向量表示。前者在完整图上累计链接贡献，得到网页的全局重要性；后者在局部子图上学习游走上下文，得到可用于近邻检索的节点表示。两项结果分别对应全局节点排序与局部结构关系分析。
+
+\section{实验总结}
+本实验完成了 Stanford Web Graph 的预处理、TuGraph 图模式构建、批量导入及查询核验，建立了包含 281,903 个节点和 2,312,497 条有向边的网页链接图。在此基础上，使用 PageRank 获得全图节点重要性排序，其中节点 89073 排名第一；使用 Node2Vec 在 1,200 节点子图上学习 32 维向量，并通过余弦相似度检索结构近邻。实验将图数据库的数据管理功能与节点排序、节点表示学习结合，完成了从图数据建模到算法分析的实验流程。
+
+\begin{thebibliography}{9}
+\raggedright
+\addcontentsline{toc}{section}{参考文献}
+\bibitem{snap} Stanford Network Analysis Project. Stanford web graph[DB/OL]. \url{https://snap.stanford.edu/data/web-Stanford.html}.
+\bibitem{node2vec} Grover A, Leskovec J. node2vec: Scalable Feature Learning for Networks[C]//Proceedings of KDD. 2016.
+\bibitem{tugraph} TuGraph. TuGraph 官方文档[EB/OL]. \url{https://tugraph-db.readthedocs.io/}.
+\bibitem{template} Hu Xueyan. \href{https://www.overleaf.com/latex/templates/central-university-of-finance-and-economics-cufe-course-report-latex-template/zjsmnqbwgmyg}{CUFE Course Report LaTeX Template}[EB/OL]. Overleaf. CC BY 4.0.
+\end{thebibliography}
+
+\end{document}
+

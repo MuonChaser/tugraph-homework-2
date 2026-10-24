@@ -1,0 +1,34 @@
+{
+  "schema": [
+    {
+      "label": "webpage",
+      "type": "VERTEX",
+      "primary": "id",
+      "properties": [{"name": "id", "type": "INT32"}]
+    },
+    {
+      "label": "hyperlink",
+      "type": "EDGE",
+      "constraints": [["webpage", "webpage"]],
+      "properties": []
+    }
+  ],
+  "files": [
+    {
+      "path": "/workspace/data/webpage.csv",
+      "format": "CSV",
+      "label": "webpage",
+      "header": 0,
+      "columns": ["id"]
+    },
+    {
+      "path": "/workspace/data/hyperlink.csv",
+      "format": "CSV",
+      "label": "hyperlink",
+      "header": 0,
+      "SRC_ID": "webpage",
+      "DST_ID": "webpage",
+      "columns": ["SRC_ID", "DST_ID"]
+    }
+  ]
+}

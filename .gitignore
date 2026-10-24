@@ -1,0 +1,14 @@
+data/
+tugraph_db/
+tugraph_export/
+tmp/
+runtime/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+latex_report/*.aux
+latex_report/*.log
+latex_report/*.out
+latex_report/*.toc
+latex_report/main.pdf

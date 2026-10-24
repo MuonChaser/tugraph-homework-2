@@ -1,0 +1,62 @@
+{
+  "algorithm": "Node2Vec with skip-gram negative sampling",
+  "input": "TuGraph CSV export of imported graph",
+  "scope": "deterministic induced BFS sample around top PageRank node",
+  "sample_seed_page_id": 89073,
+  "sample_vertices": 1200,
+  "sample_directed_edges": 2289,
+  "walks_per_node": 4,
+  "walk_length_max": 12,
+  "p": 1.0,
+  "q": 2.0,
+  "embedding_dimension": 32,
+  "window": 3,
+  "negative_samples": 3,
+  "epochs": 5,
+  "walk_count": 4800,
+  "skipgram_pairs": 288000,
+  "mean_negative_sampling_loss_epoch1": 2.0113152358294246,
+  "nearest_pages": [
+    {
+      "page_id": 16518,
+      "cosine_similarity": 0.9136890769004822
+    },
+    {
+      "page_id": 19912,
+      "cosine_similarity": 0.9063976407051086
+    },
+    {
+      "page_id": 12055,
+      "cosine_similarity": 0.9058694839477539
+    },
+    {
+      "page_id": 9082,
+      "cosine_similarity": 0.9051515460014343
+    },
+    {
+      "page_id": 7815,
+      "cosine_similarity": 0.8998982906341553
+    },
+    {
+      "page_id": 20040,
+      "cosine_similarity": 0.8973793983459473
+    },
+    {
+      "page_id": 8209,
+      "cosine_similarity": 0.894802987575531
+    },
+    {
+      "page_id": 18910,
+      "cosine_similarity": 0.893308699131012
+    },
+    {
+      "page_id": 2748,
+      "cosine_similarity": 0.8917415738105774
+    },
+    {
+      "page_id": 5237,
+      "cosine_similarity": 0.891175389289856
+    }
+  ],
+  "mean_negative_sampling_loss_final": 1.8504915034389717
+}

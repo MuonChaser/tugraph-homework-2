@@ -1,0 +1,179 @@
+{
+  "pagerank": {
+    "algorithm": "PageRank",
+    "input": "TuGraph CSV export of imported graph",
+    "alpha": 0.85,
+    "max_iter": 100,
+    "tolerance_l1": 1e-12,
+    "iterations": 100,
+    "final_l1_residual": 1.93709839503524e-09,
+    "elapsed_seconds": 0.6995514999143779,
+    "rank_sum": 0.9999999999999987,
+    "vertices": 281903,
+    "edges": 2312497,
+    "top20": [
+      {
+        "page_id": 89073,
+        "pagerank": 0.011302854908404922,
+        "out_degree": 64
+      },
+      {
+        "page_id": 226411,
+        "pagerank": 0.009267830875148613,
+        "out_degree": 20
+      },
+      {
+        "page_id": 241454,
+        "pagerank": 0.008297272329247863,
+        "out_degree": 64
+      },
+      {
+        "page_id": 262860,
+        "pagerank": 0.003023117161542385,
+        "out_degree": 1
+      },
+      {
+        "page_id": 134832,
+        "pagerank": 0.003001278901637633,
+        "out_degree": 7
+      },
+      {
+        "page_id": 234704,
+        "pagerank": 0.0025717312614366647,
+        "out_degree": 23
+      },
+      {
+        "page_id": 136821,
+        "pagerank": 0.002453713727737631,
+        "out_degree": 14
+      },
+      {
+        "page_id": 68889,
+        "pagerank": 0.0024307906696689947,
+        "out_degree": 12
+      },
+      {
+        "page_id": 105607,
+        "pagerank": 0.002391045908292415,
+        "out_degree": 35
+      },
+      {
+        "page_id": 69358,
+        "pagerank": 0.002364014285612276,
+        "out_degree": 7
+      },
+      {
+        "page_id": 67756,
+        "pagerank": 0.0023010006099533466,
+        "out_degree": 2
+      },
+      {
+        "page_id": 225872,
+        "pagerank": 0.0022674150022610803,
+        "out_degree": 189
+      },
+      {
+        "page_id": 186750,
+        "pagerank": 0.0022324474256266965,
+        "out_degree": 21
+      },
+      {
+        "page_id": 272442,
+        "pagerank": 0.0021465477971696957,
+        "out_degree": 4
+      },
+      {
+        "page_id": 251796,
+        "pagerank": 0.0021465477971696935,
+        "out_degree": 4
+      },
+      {
+        "page_id": 95163,
+        "pagerank": 0.002146547797169689,
+        "out_degree": 4
+      },
+      {
+        "page_id": 119479,
+        "pagerank": 0.0020362485345118394,
+        "out_degree": 28
+      },
+      {
+        "page_id": 231363,
+        "pagerank": 0.0020076996926737304,
+        "out_degree": 1
+      },
+      {
+        "page_id": 55788,
+        "pagerank": 0.001957045615543526,
+        "out_degree": 1
+      },
+      {
+        "page_id": 167295,
+        "pagerank": 0.0019162470732943385,
+        "out_degree": 12
+      }
+    ]
+  },
+  "node2vec": {
+    "algorithm": "Node2Vec with skip-gram negative sampling",
+    "input": "TuGraph CSV export of imported graph",
+    "scope": "deterministic induced BFS sample around top PageRank node",
+    "sample_seed_page_id": 89073,
+    "sample_vertices": 1200,
+    "sample_directed_edges": 2289,
+    "walks_per_node": 4,
+    "walk_length_max": 12,
+    "p": 1.0,
+    "q": 2.0,
+    "embedding_dimension": 32,
+    "window": 3,
+    "negative_samples": 3,
+    "epochs": 5,
+    "walk_count": 4800,
+    "skipgram_pairs": 288000,
+    "mean_negative_sampling_loss_epoch1": 2.0113152358294246,
+    "nearest_pages": [
+      {
+        "page_id": 16518,
+        "cosine_similarity": 0.9136890769004822
+      },
+      {
+        "page_id": 19912,
+        "cosine_similarity": 0.9063976407051086
+      },
+      {
+        "page_id": 12055,
+        "cosine_similarity": 0.9058694839477539
+      },
+      {
+        "page_id": 9082,
+        "cosine_similarity": 0.9051515460014343
+      },
+      {
+        "page_id": 7815,
+        "cosine_similarity": 0.8998982906341553
+      },
+      {
+        "page_id": 20040,
+        "cosine_similarity": 0.8973793983459473
+      },
+      {
+        "page_id": 8209,
+        "cosine_similarity": 0.894802987575531
+      },
+      {
+        "page_id": 18910,
+        "cosine_similarity": 0.893308699131012
+      },
+      {
+        "page_id": 2748,
+        "cosine_similarity": 0.8917415738105774
+      },
+      {
+        "page_id": 5237,
+        "cosine_similarity": 0.891175389289856
+      }
+    ],
+    "mean_negative_sampling_loss_final": 1.8504915034389717
+  }
+}

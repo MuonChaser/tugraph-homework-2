@@ -1,0 +1,10 @@
+{
+  "source": "Stanford SNAP web-Stanford",
+  "raw_file": "web-Stanford.txt.gz",
+  "vertices": 281903,
+  "edges": 2312497,
+  "id_min": 1,
+  "id_max": 281903,
+  "directed": true,
+  "generated_utc": "2026-10-22T04:00:20Z"
+}
