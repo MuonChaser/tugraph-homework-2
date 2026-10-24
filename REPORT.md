@@ -478,4 +478,3 @@ PageRank 与 Node2Vec 分别给出节点的排序结果和向量表示。前者�
 1. Stanford Network Analysis Project. [Stanford web graph](https://snap.stanford.edu/data/web-Stanford.html).
 2. Grover A, Leskovec J. node2vec: Scalable Feature Learning for Networks. KDD, 2016.
 3. [TuGraph 官方文档](https://tugraph-db.readthedocs.io/).
-4. Hu Xueyan. [CUFE Course Report LaTeX Template](https://www.overleaf.com/latex/templates/central-university-of-finance-and-economics-cufe-course-report-latex-template/zjsmnqbwgmyg). Overleaf. CC BY 4.0.
