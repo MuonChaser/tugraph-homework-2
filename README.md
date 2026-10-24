@@ -1,7 +1,7 @@
 # 基于 TuGraph 的 Stanford Web Graph 分析
 
 中央财经大学「专业综合实践」课程实验  
-姓名：张博文　学号：2023312327　任课教师：王卯宁　课程代码：0610140-01
+班级：数据科学与大数据技术23　姓名：张博文　学号：2023312327　任课教师：王卯宁　课程代码：0610140-01
 
 - [在线阅读全文：实验过程、算法与结果](REPORT.md)
 - [查看实验报告 PDF](output/pdf/作业报告.pdf)
@@ -140,4 +140,5 @@ import.json                       TuGraph 导入配置
 - Grover A, Leskovec J. node2vec: Scalable Feature Learning for Networks. KDD, 2016.
 - [TuGraph 官方文档](https://tugraph-db.readthedocs.io/)
 - 封面依据 Xueyan Hu 的 [CUFE Course Report LaTeX Template](https://www.overleaf.com/latex/templates/central-university-of-finance-and-economics-cufe-course-report-latex-template/zjsmnqbwgmyg)，CC BY 4.0。校名校徽组合图沿用该模板来源仓库中的素材。
+
 

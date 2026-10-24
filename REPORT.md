@@ -1,6 +1,7 @@
 # 基于 TuGraph 的 Stanford Web Graph 分析
 
-中央财经大学 · 专业综合实践○  
+中央财经大学 · 专业综合实践  
+班级：数据科学与大数据技术23  
 张博文　2023312327　任课教师：王卯宁
 
 [查看 PDF 报告](output/pdf/作业报告.pdf) · [查看完整算法代码](scripts/run_experiment.py) · [返回仓库首页](README.md)
@@ -237,4 +238,5 @@ PageRank 在完整图上累计链接贡献，得到网页的全局重要性；No
 2. Grover A, Leskovec J. node2vec: Scalable Feature Learning for Networks. KDD, 2016.
 3. [TuGraph 官方文档](https://tugraph-db.readthedocs.io/).
 4. Hu Xueyan. [CUFE Course Report LaTeX Template](https://www.overleaf.com/latex/templates/central-university-of-finance-and-economics-cufe-course-report-latex-template/zjsmnqbwgmyg). Overleaf. CC BY 4.0.
+
 
