@@ -1,8 +1,5 @@
 # 基于 TuGraph 的 Stanford Web Graph 分析
 
-中央财经大学「专业综合实践」课程实验  
-班级：数据科学与大数据技术23　姓名：张博文　学号：2023312327　任课教师：王卯宁　课程代码：0610140-01
-
 - [在线阅读全文：实验过程、算法与结果](REPORT.md)
 - [查看实验报告 PDF](output/pdf/作业报告.pdf)
 - [查看 LaTeX 源文件](latex_report/main.tex)
